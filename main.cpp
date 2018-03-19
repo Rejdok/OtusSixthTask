@@ -233,7 +233,7 @@ private:
 
 using Matrix = SparseArray<SparseArray<int>>;
 using Matrix3d = SparseArray<SparseArray<SparseArray<int>>>;
-Matrix a{ SparseArray<int>(10) };
+Matrix a{ SparseArray<int>(0) };
 Matrix3d b{ Matrix{ SparseArray<int>{10} } };
 
 int main()
@@ -248,7 +248,7 @@ int main()
 		}
 		std::cout << std::endl;
 	}
-	std::cout<< a.size()<<std::endl;
+	std::cout<< "Count of reserved elements = "<<a.size()<<std::endl;
 	a.printAllReservedItems();
 	return 0;
 }
