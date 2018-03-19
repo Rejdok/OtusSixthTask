@@ -10,12 +10,6 @@ set_target_properties(
 	CXX_STANDARD_REQUIRED ON
 	COMPILE_OPTIONS -Wpedantic -Wall -Wextra
 )
-
-target_compile_definitions(
-	test_version
-	PRIVATE "BOOST_TEST_DYN_LINK=1"
-)
-
 install(TARGETS matrix RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR "DEB")
