@@ -242,6 +242,7 @@ int main()
 		a[i][i] = i;
 		a[i][9 - i] = 9 - i;
 	}
+	std::cout<<"matrix: "<<std::endl;
 	for (int i = 1; i < 9; i++) {
 		for (int j = 1; j < 9; j++) {
 			std::cout << a[i][j] << " ";
