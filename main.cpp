@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <type_traits>
 #include <vector>
@@ -80,17 +81,27 @@ public:
 		}
 	}
 	Wrapper<PrewLevel, ContainerType, ContainedValueT>& operator=(ContainedValueT const& rhs) {
-		if (isPrevLevelElementExist)
-			*containedValue = rhs;
-		else {
-			containerPointer = prevLevel->assignment();
-			isPrevLevelElementExist = true;
-			if constexpr (is_same_type<SparseArray, ContainerType>()) {
-				containerPointer->cont[index] = rhs;
-				containedValue = &containerPointer->cont[index];
+		if (isPrevLevelElementExist) {
+			if (containerPointer->initialValue!=rhs) {
+				*containedValue = rhs;
 			}
 			else {
-				(*containerPointer)[index] = rhs;
+				//удаление элемента
+				containerPointer->cont.erase(index);
+				*containedValue = containerPointer->initialValue;
+			}
+		}
+		else {
+			if (rhs!= containerPointer->initialValue) {
+				containerPointer = prevLevel->assignment();
+				isPrevLevelElementExist = true;
+				if constexpr (is_same_type<SparseArray, ContainerType>()) {
+					containerPointer->cont[index] = rhs;
+					containedValue = &containerPointer->cont[index];
+				}
+				else {
+					(*containerPointer)[index] = rhs;
+				}
 			}
 		}
 		return *this;
@@ -152,8 +163,15 @@ public:
 	Wrapper<ContainerType, ContainedValueT>& operator=(ContainedValueT const& rhs) {
 		if (!isCurrentLevelElementExist) {
 			containedValue = val->cont[index];
+			return *this;
 		}
-		val->cont[index] = rhs;
+		if (rhs != val->initialValue) {
+			val->cont[index] = rhs;
+		}
+		else {
+			isCurrentLevelElementExist = false;
+			val->cont.eraese(i);
+		}
 		return *this;
 	}
 	auto operator*() {
@@ -208,7 +226,8 @@ public:
 				auto a = "index " + std::to_string(i.first) + " ";
 				i.second.printAllReservedItems1(a);
 			}
-		} else{
+		}
+		else {
 			std::cout << "err" << std::endl;
 		}
 
@@ -224,7 +243,7 @@ private:
 		}
 		else {
 			for (auto &i : cont)
-				std::cout<<hlIndex<< i.first<<" value "<<i.second<<" "<<std::endl;
+				std::cout << hlIndex << i.first << " value " << i.second << " " << std::endl;
 		}
 	}
 	T initialValue;
@@ -242,14 +261,27 @@ int main()
 		a[i][i] = i;
 		a[i][9 - i] = 9 - i;
 	}
-	std::cout<<"matrix: "<<std::endl;
+	std::cout << "matrix: " << std::endl;
 	for (int i = 1; i < 9; i++) {
 		for (int j = 1; j < 9; j++) {
 			std::cout << a[i][j] << " ";
 		}
 		std::cout << std::endl;
 	}
-	std::cout<< "Count of reserved elements = "<<a.size()<<std::endl;
+	std::cout << "Count of reserved elements = " << a.size() << std::endl;
+	a.printAllReservedItems();
+	for (int i = 0; i < 10; i++) {
+		a[i][i] = 0;
+		a[i][9 - i] = 0;
+	}
+	std::cout << "matrix: " << std::endl;
+	for (int i = 1; i < 9; i++) {
+		for (int j = 1; j < 9; j++) {
+			std::cout << a[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "Count of reserved elements = " << a.size() << std::endl;
 	a.printAllReservedItems();
 	return 0;
 }
