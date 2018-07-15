@@ -170,7 +170,7 @@ public:
 		}
 		else {
 			isCurrentLevelElementExist = false;
-			val->cont.eraese(i);
+			val->cont.eraese(index);
 		}
 		return *this;
 	}
